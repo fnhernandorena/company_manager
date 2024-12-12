@@ -12,4 +12,5 @@ export class CreateBuyerDto {
     @IsString()
     @MinLength(8)
     phone: string;
+
 }

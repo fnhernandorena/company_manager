@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
 import { UpdateBuyerDto } from './dto/update-buyer.dto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class BuyerService {
+  constructor( private prisma: PrismaService) {}
+
   create(createBuyerDto: CreateBuyerDto) {
-    return 'This action adds a new buyer';
+    return this.prisma.buyer.create({data: createBuyerDto});
   }
 
   findAll() {
-    return `This action returns all buyer`;
+    return this.prisma.buyer.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} buyer`;
+  findOne(id: string) {
+    return this.prisma.buyer.findUnique({where: {id: id}});
   }
 
-  update(id: number, updateBuyerDto: UpdateBuyerDto) {
-    return `This action updates a #${id} buyer`;
+  update(id: string, updateBuyerDto: UpdateBuyerDto) {
+    return this.prisma.buyer.update({where: {id: id}, data: updateBuyerDto});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} buyer`;
+  remove(id: string) {
+    return this.prisma.buyer.delete({where: {id: id}});
   }
 }

@@ -23,7 +23,7 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  invoices   Invoice[] @relation("UserInvoices")
+  invoices Invoice[] @relation("UserInvoices")
 
   Invoice Invoice[]
 }
@@ -40,9 +40,9 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  brand       Brand    @relation(fields: [brand_id], references: [id])
-  name        Name     @relation(fields: [name_id], references: [id])
-  seels       Seel[]   @relation("ProductSeels")
+  brand Brand  @relation(fields: [brand_id], references: [id])
+  name  Name   @relation(fields: [name_id], references: [id])
+  seels Seel[] @relation("ProductSeels")
 
   Seel Seel[]
 }
@@ -53,7 +53,7 @@ model Brand {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  products  Product[]
+  products Product[]
 }
 
 model Name {
@@ -62,7 +62,7 @@ model Name {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  products  Product[]
+  products Product[]
 }
 
 model Seel {
@@ -71,8 +71,8 @@ model Seel {
   product_id String
   quantity   Float
 
-  invoice    Invoice @relation(fields: [invoice_id], references: [id])
-  product    Product @relation(fields: [product_id], references: [id])
+  invoice Invoice @relation(fields: [invoice_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
 
   Invoice Invoice[] @relation("InvoiceSeels")
 
@@ -88,9 +88,9 @@ model Invoice {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user        User     @relation(fields: [user_id], references: [id])
-  buyer       Buyer    @relation(fields: [buyer_id], references: [id])
-  seels       Seel[]   @relation("InvoiceSeels")
+  user  User   @relation(fields: [user_id], references: [id])
+  buyer Buyer  @relation(fields: [buyer_id], references: [id])
+  seels Seel[] @relation("InvoiceSeels")
 
   Seel Seel[]
 
@@ -102,10 +102,10 @@ model Buyer {
   name       String
   email      String   @unique
   phone      String
-  debt       Float
-  total_debt Float
+  debt       Float    @default(0)
+  total_debt Float    @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  invoices   Invoice[]
+  invoices Invoice[]
 }

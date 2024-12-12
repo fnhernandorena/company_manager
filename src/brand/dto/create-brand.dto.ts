@@ -4,6 +4,4 @@ export class CreateBrandDto {
   @IsString()
   @MinLength(3)
   name: string;
-
-  
 }
