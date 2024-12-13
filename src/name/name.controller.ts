@@ -19,16 +19,16 @@ export class NameController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.nameService.findOne(+id);
+    return this.nameService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateNameDto: UpdateNameDto) {
-    return this.nameService.update(+id, updateNameDto);
+    return this.nameService.update(id, updateNameDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.nameService.remove(+id);
+    return this.nameService.remove(id);
   }
 }

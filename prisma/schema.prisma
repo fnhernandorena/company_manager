@@ -109,3 +109,10 @@ model Buyer {
 
   invoices Invoice[]
 }
+
+model invitation_link{
+  id String @id @default(uuid())
+  company_id String
+  role Int
+  used_by String? @unique 
+}
