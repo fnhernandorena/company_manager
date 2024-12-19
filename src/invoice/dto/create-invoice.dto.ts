@@ -5,6 +5,9 @@ export class CreateInvoiceDto {
     user_id: string;
 
     @IsString()
+    company_id: string;
+
+    @IsString()
     buyer_id: string;
 
     @IsOptional()

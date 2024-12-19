@@ -7,7 +7,9 @@ import { PrismaService } from 'src/prisma.service';
 export class NameService {
   constructor(private prisma: PrismaService) {}
   create(createNameDto: CreateNameDto) {
-    return this.prisma.name.create({data: createNameDto})
+    return this.prisma.name.upsert({where: {name: createNameDto.name},
+    update: {},
+  create:{ ...createNameDto}})
   }
 
   findAll() {

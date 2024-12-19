@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +5,16 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  users     User[]
+  invoices  Invoice[]
 }
 
 model User {
@@ -21,11 +25,10 @@ model User {
   company_id String?
   role       Int
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now())
 
-  invoices Invoice[] @relation("UserInvoices")
-
-  Invoice Invoice[]
+  company    Company? @relation(fields: [company_id], references: [id])
+  invoices   Invoice[] @relation("UserInvoices")
 }
 
 model Product {
@@ -38,63 +41,55 @@ model Product {
   company_id  String
   price       Float
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now())
 
-  brand Brand  @relation(fields: [brand_id], references: [id])
-  name  Name   @relation(fields: [name_id], references: [id])
-  seels Seel[] @relation("ProductSeels")
-
-  Seel Seel[]
+  brand       Brand  @relation(fields: [brand_id], references: [id])
+  name        Name   @relation(fields: [name_id], references: [id])
+  seels       Seel[]
 }
 
 model Brand {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
-  products Product[]
+  products  Product[]
 }
 
 model Name {
   id        String   @id @default(uuid())
-  name      String
+  name      String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
-  products Product[]
+  products  Product[]
 }
 
 model Seel {
-  id         String @id @default(uuid())
+  id         String   @id @default(uuid())
   invoice_id String
   product_id String
   quantity   Float
 
-  invoice Invoice @relation(fields: [invoice_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
-
-  Invoice Invoice[] @relation("InvoiceSeels")
-
-  Product Product[] @relation("ProductSeels")
+  invoice    Invoice @relation(fields: [invoice_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
 }
 
 model Invoice {
   id          String   @id @default(uuid())
   user_id     String
+  company_id  String
   buyer_id    String
   description String?
   amount      Float
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now())
 
-  user  User   @relation(fields: [user_id], references: [id])
-  buyer Buyer  @relation(fields: [buyer_id], references: [id])
-  seels Seel[] @relation("InvoiceSeels")
-
-  Seel Seel[]
-
-  User User[] @relation("UserInvoices")
+  user        User    @relation(fields: [user_id], references: [id], name: "UserInvoices")
+  company     Company @relation(fields: [company_id], references: [id])
+  buyer       Buyer   @relation(fields: [buyer_id], references: [id])
+  seels       Seel[]
 }
 
 model Buyer {
@@ -105,14 +100,14 @@ model Buyer {
   debt       Float    @default(0)
   total_debt Float    @default(0)
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now())
 
-  invoices Invoice[]
+  invoices   Invoice[]
 }
 
-model invitation_link{
-  id String @id @default(uuid())
+model invitation_link {
+  id         String  @id @default(uuid())
   company_id String
-  role Int
-  used_by String? @unique 
+  role       Int
+  used_by    String? @unique
 }

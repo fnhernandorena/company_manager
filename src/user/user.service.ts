@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma.service';
+import * as bcrypt from 'bcrypt'
+import { LoginDto } from 'src/auth/dto/login.dto';
 
 @Injectable()
 export class UserService {
 
 constructor(private prisma: PrismaService) {}
 
-  createCompany(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto) {
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10)
     return this.prisma.user.create({data: createUserDto});
   }
 
@@ -27,4 +30,28 @@ constructor(private prisma: PrismaService) {}
   remove(id: string) {
     return this.prisma.user.delete({where: {id: id}});
   }
+
+async authenticateUser(login: LoginDto) {
+  const user = await this.prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: login.identificator },
+        { username: login.identificator }
+      ],
+    },
+  });
+
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const isPasswordValid = await bcrypt.compare(login.password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error('Contraseña incorrecta');
+  }
+
+  return user;
 }
+}
+

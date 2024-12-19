@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma.service';
 export class InvoiceService {
   constructor(private prisma: PrismaService) {}
   create(createInvoiceDto: CreateInvoiceDto) {
-    const invoice = {...createInvoiceDto, 'amount': 0}
+    const invoice = {...createInvoiceDto, 'amount': 0, }
     return this.prisma.invoice.create({data: invoice});
   }
 

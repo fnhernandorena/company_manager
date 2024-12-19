@@ -8,9 +8,10 @@ import { NameModule } from './name/name.module';
 import { SellModule } from './sell/sell.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { BuyerModule } from './buyer/buyer.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule, BrandModule, ProductModule, NameModule, SellModule, InvoiceModule, BuyerModule],
+  imports: [UserModule, BrandModule, ProductModule, NameModule, SellModule, InvoiceModule, BuyerModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
