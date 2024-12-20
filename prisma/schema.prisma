@@ -8,13 +8,16 @@ datasource db {
 }
 
 model Company {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id               String   @id @default(uuid())
+  name             String   
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
-  users     User[]
-  invoices  Invoice[]
+  users            User[]
+  invoices         Invoice[] @relation("CompanyInvoices")
+  products         Product[]
+  buyers           Buyer[]
+  invitationLinks  invitation_link[]
 }
 
 model User {
@@ -22,7 +25,7 @@ model User {
   username   String   @unique
   email      String   @unique
   password   String
-  company_id String?
+  company_id String
   role       Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
@@ -46,6 +49,7 @@ model Product {
   brand       Brand  @relation(fields: [brand_id], references: [id])
   name        Name   @relation(fields: [name_id], references: [id])
   seels       Seel[]
+  company     Company @relation(fields: [company_id], references: [id])
 }
 
 model Brand {
@@ -82,12 +86,12 @@ model Invoice {
   company_id  String
   buyer_id    String
   description String?
-  amount      Float
+  amount      Float @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
 
   user        User    @relation(fields: [user_id], references: [id], name: "UserInvoices")
-  company     Company @relation(fields: [company_id], references: [id])
+  company     Company @relation(fields: [company_id], references: [id], name: "CompanyInvoices")
   buyer       Buyer   @relation(fields: [buyer_id], references: [id])
   seels       Seel[]
 }
@@ -95,19 +99,21 @@ model Invoice {
 model Buyer {
   id         String   @id @default(uuid())
   name       String
-  email      String   @unique
+  email      String   
   phone      String
+  company_id String
   debt       Float    @default(0)
   total_debt Float    @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
 
   invoices   Invoice[]
+  company    Company @relation(fields: [company_id], references: [id])
 }
 
 model invitation_link {
   id         String  @id @default(uuid())
   company_id String
   role       Int
-  used_by    String? @unique
+  company    Company @relation(fields: [company_id], references: [id])
 }

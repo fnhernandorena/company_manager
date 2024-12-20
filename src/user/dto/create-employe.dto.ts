@@ -1,6 +1,6 @@
-import { IsEmail, IsIn, IsInt, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class User {
+export class CreateEmployeDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
@@ -15,11 +15,4 @@ export class User {
   @IsString()
   @MinLength(8)
   password: string;
-
-  @IsString()
-  company_id: string;
-
-  @IsInt()
-  @IsIn([0,1,2])
-  role: number;
 }

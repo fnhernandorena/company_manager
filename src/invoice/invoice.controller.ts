@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guards';
 
+@UseGuards(JwtAuthGuard)
 @Controller('invoice')
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
   @Post()
-  create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return this.invoiceService.create(createInvoiceDto);
+  create(@Request() req, @Body() createInvoiceDto: CreateInvoiceDto) {
+    console.log(req.user);
+    const newInvoice = {...createInvoiceDto, company_id: req.user.company_id, user_id: req.user.sub};
+    const invoice = this.invoiceService.create(newInvoice);
+    
   }
 
   @Get()

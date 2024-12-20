@@ -17,9 +17,6 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
-  @IsString()
-  company_id: string;
-
   @IsNumber()
   price: number;
 }

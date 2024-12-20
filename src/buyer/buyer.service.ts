@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
 import { UpdateBuyerDto } from './dto/update-buyer.dto';
 import { PrismaService } from 'src/prisma.service';
+import { Buyer } from './entities/buyer.entity';
 
 @Injectable()
 export class BuyerService {
   constructor( private prisma: PrismaService) {}
 
-  create(createBuyerDto: CreateBuyerDto) {
-    return this.prisma.buyer.create({data: createBuyerDto});
+  create(buyer: Buyer) {
+    return this.prisma.buyer.create({data: buyer});
   }
 
   findAll() {

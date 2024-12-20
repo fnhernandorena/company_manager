@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
 import { BuyerService } from './buyer.service';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
 import { UpdateBuyerDto } from './dto/update-buyer.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guards';
 
+@UseGuards(JwtAuthGuard)
 @Controller('buyer')
 export class BuyerController {
   constructor(private readonly buyerService: BuyerService) {}
 
   @Post()
-  create(@Body() createBuyerDto: CreateBuyerDto) {
-    return this.buyerService.create(createBuyerDto);
+  create(@Request() req, @Body() createBuyerDto: CreateBuyerDto) {
+    console.log(req.user);
+    const buyer = {...createBuyerDto, company_id: req.user.company_id};
+    console.log(buyer);
+    return this.buyerService.create(buyer);
   }
 
   @Get()
