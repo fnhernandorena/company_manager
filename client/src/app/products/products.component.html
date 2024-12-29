@@ -1,0 +1,33 @@
+<a href="/createProduct">Add new</a>
+@if (products.length > 0) {
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Marca</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+        <th>Magnitud</th>
+        <th>Precio</th>
+        <th>Creado</th>
+        <th>Actualizado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (product of products; track $index) {
+        <tr>
+          <td>{{ product.nameText }}</td>
+          <td>{{ product.brandText }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.magnitude }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.createdAt }}</td>
+          <td>{{ product.updatedAt }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  Parece que no tienes productos registrados!
+}

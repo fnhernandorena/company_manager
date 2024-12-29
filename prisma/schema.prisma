@@ -48,7 +48,7 @@ model Product {
 
   brand       Brand  @relation(fields: [brand_id], references: [id])
   name        Name   @relation(fields: [name_id], references: [id])
-  seels       Seel[]
+  sells       Sell[]
   company     Company @relation(fields: [company_id], references: [id])
 }
 
@@ -70,7 +70,7 @@ model Name {
   products  Product[]
 }
 
-model Seel {
+model Sell {
   id         String   @id @default(uuid())
   invoice_id String
   product_id String
@@ -84,7 +84,7 @@ model Invoice {
   id          String   @id @default(uuid())
   user_id     String
   company_id  String
-  buyer_id    String
+  buyer_id    String?
   description String?
   amount      Float @default(0)
   createdAt   DateTime @default(now())
@@ -92,8 +92,8 @@ model Invoice {
 
   user        User    @relation(fields: [user_id], references: [id], name: "UserInvoices")
   company     Company @relation(fields: [company_id], references: [id], name: "CompanyInvoices")
-  buyer       Buyer   @relation(fields: [buyer_id], references: [id])
-  seels       Seel[]
+  buyer       Buyer?   @relation(fields: [buyer_id], references: [id])
+  sells       Sell[]
 }
 
 model Buyer {

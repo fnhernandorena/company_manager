@@ -17,10 +17,10 @@ export class AuthController {
  const username = user.username;
  const token = this.authService.generateToken(user);
  response.cookie('access_token', token, {
-   httpOnly: true,
-   secure: process.env.NODE_ENV === 'production', 
-   maxAge: 90 * 24 * 60 * 60 * 1000,
- });
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+});
 
  return response.status(201).json({
    message: 'Iniciaste sesion!',

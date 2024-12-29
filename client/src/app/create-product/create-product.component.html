@@ -1,0 +1,194 @@
+<form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Quantity</label>
+    <input
+      id="quantity"
+      type="number"
+      class="form-control"
+      formControlName="quantity"
+    />
+    @if (
+      stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched
+    ) {
+      <small class="text-danger"
+        >Quantity is required and must be a non-negative number.</small
+      >
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="magnitude" class="form-label">Magnitude</label>
+    <input
+      id="magnitude"
+      type="text"
+      class="form-control"
+      formControlName="magnitude"
+    />
+    @if (
+      stockForm.get('magnitude')?.invalid && stockForm.get('magnitude')?.touched
+    ) {
+      <small class="text-danger">Magnitude is required.</small>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="brand_id" class="form-label">Brand</label>
+    <select id="brand_id" class="form-select" formControlName="brand_id">
+      @for (brand of brands; track $index) {
+        <option [value]="brand.id">
+          {{ brand.name }}
+        </option>
+      }
+    </select>
+    <button
+      class="btn btn-primary mt-2"
+      data-bs-target="#exampleModalToggle"
+      data-bs-toggle="modal"
+    >
+      Agregar marca
+    </button>
+    @if (
+      stockForm.get('brand_id')?.invalid && stockForm.get('brand_id')?.touched
+    ) {
+      <small class="text-danger">Brand is required.</small>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="name_id" class="form-label">Tipo</label>
+    <button
+      class="btn btn-primary"
+      data-bs-target="#exampleModalToggle2"
+      data-bs-toggle="modal"
+    >
+      Agregar tipo
+    </button>
+  
+    <select
+      id="name_id"
+      class="form-control"
+      formControlName="name_id"
+    >
+      <option value="" disabled selected>Selecciona un tipo</option>
+    @for (type of types; track $index) {  <option [value]="type.id">{{ type.name }}</option>}
+    </select>
+  
+    @if (stockForm.get('name_id')?.invalid && stockForm.get('name_id')?.touched) {
+    <div >
+      <small class="text-danger">Name ID is required.</small>
+    </div>}
+  </div>
+  
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Description (Optional)</label>
+    <textarea
+      id="description"
+      class="form-control"
+      formControlName="description"
+    ></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="price" class="form-label">Price</label>
+    <input
+      id="price"
+      type="number"
+      class="form-control"
+      formControlName="price"
+    />
+    @if (stockForm.get('price')?.invalid && stockForm.get('price')?.touched) {
+      <small class="text-danger"
+        >Price is required and must be a non-negative number.</small
+      >
+    }
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="stockForm.invalid">
+    Submit
+  </button>
+</form>
+
+<div
+  class="modal fade"
+  id="exampleModalToggle"
+  aria-hidden="true"
+  aria-labelledby="exampleModalToggleLabel"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+          Agregar marca
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="brandForm" class="mb-3">
+          <label for="newBrand" class="form-label"
+            >Nombre de la nueva marca</label
+          >
+          <input
+            id="newBrand"
+            type="text"
+            class="form-control"
+            formControlName="brand"
+            placeholder="Ingrese el nombre de la marca"
+          />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="createBrand()">
+          Crear Marca
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="exampleModalToggle2"
+  aria-hidden="true"
+  aria-labelledby="exampleModalToggleLabel2"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
+          Agregar tipo
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="typeForm" class="mb-3">
+          <label for="newType" class="form-label">Nombre del nuevo tipo</label>
+          <input
+            id="newType"
+            type="text"
+            class="form-control"
+            formControlName="type"
+            placeholder="Ingrese el nombre del tipo"
+          />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="createType()">
+          Crear Tipo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
