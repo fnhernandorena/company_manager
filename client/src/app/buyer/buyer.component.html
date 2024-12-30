@@ -1,1 +1,23 @@
-<p>buyer works!</p>
+<div class="container mt-4">
+  <div class="row">
+  @for (buyer of buyers; track $index) {  <div class="col-md-4 mb-4" >
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ buyer.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+           {{ buyer.email }}
+          </h6>
+          <p class="card-text">
+            <strong>Phone:</strong> {{ buyer.phone }}<br />
+            <strong>Debt:</strong> {{ buyer.debt }}<br />
+            <strong>Total Debt:</strong> {{ buyer.total_debt }}
+          </p>
+        </div>
+        <div class="card-footer text-end">
+          <button class="btn btn-primary btn-sm me-2">View</button>
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </div>
+      </div>
+    </div>}
+  </div>
+</div>

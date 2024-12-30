@@ -1,0 +1,104 @@
+<div class="company-header">
+    <button
+      class="btn btn-primary"
+      data-bs-target="#CreateInvoiceModal"
+      data-bs-toggle="modal"
+    >
+      Crear Factura
+    </button>
+  </div>
+  
+  <div
+    class="modal fade"
+    id="CreateInvoiceModal"
+    aria-hidden="true"
+    aria-labelledby="CreateInvoiceModalLabel"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="CreateInvoiceModalLabel">
+            Crear Factura
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          @if (invoiceForm) {<form [formGroup]="invoiceForm" class="mb-3">
+            <!-- Buyer Selection -->
+            <label for="buyerSelect" class="form-label">Selecciona el Comprador</label>
+            <select id="buyerSelect" class="form-control" formControlName="buyer_id">
+              <option *ngFor="let buyer of buyers" [value]="buyer.id">
+                {{ buyer.name }} - {{ buyer.email }}
+              </option>
+            </select>
+  
+            <!-- Description Input -->
+            <label for="description" class="form-label">Descripción</label>
+            <input
+              type="text"
+              class="form-control"
+              id="description"
+              formControlName="description"
+              placeholder="Descripción de la factura"
+            />
+  
+            <!-- Amount Input -->
+            <label for="amount" class="form-label">Monto</label>
+            <input
+              type="number"
+              class="form-control"
+              id="amount"
+              formControlName="amount"
+              placeholder="Monto de la factura"
+            />
+            
+            <!-- Products Selection -->
+            <label for="products" class="form-label">Productos</label>
+            <div formArrayName="products">
+              <div *ngFor="let product of invoiceForm.get('products').controls; let i = index">
+                <div [formGroupName]="i">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="productId"
+                    placeholder="ID del Producto"
+                  />
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="quantity"
+                    placeholder="Cantidad"
+                  />
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="price"
+                    placeholder="Precio"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="createInvoice()">
+            Crear Factura
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

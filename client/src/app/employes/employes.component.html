@@ -1,0 +1,80 @@
+<div class="company-header">
+  <h1>{{ company.name }}</h1>
+  <button
+    class="btn btn-primary"
+    data-bs-target="#InviteModal"
+    data-bs-toggle="modal"
+  >
+    Crear Invitación
+  </button>
+  <p>Id: {{ company.id }}</p>
+</div>
+
+<div class="employees-list">
+  <h2>Empleados</h2>
+  <ul>
+    @for (employe of employes; track $index) {
+      <li>
+        <p><strong>Usuario:</strong> {{ employe.username }}</p>
+        <p><strong>Email:</strong> {{ employe.email }}</p>
+        <p><strong>ID:</strong> {{ employe.id }}</p>
+        <p><strong>Creado:</strong> {{ employe.updatedAt }}</p>
+        <p><strong>Editado:</strong> {{ employe.createdAt }}</p>
+        <p>
+          <strong>Rol:</strong>
+          @if (employe.role == 0) {
+            ddud
+          } @else if (employe.role == 1) {
+            Administrador
+          } @else {
+            Empleado
+          }
+        </p>
+      </li>
+    }
+  </ul>
+</div>
+
+<div
+  class="modal fade"
+  id="InviteModal"
+  aria-hidden="true"
+  aria-labelledby="exampleModalToggleLabel"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+          Agregar marca
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="inviteForm" class="mb-3">
+          <label for="roleSelect" class="form-label">Selecciona el Rol</label>
+          <select id="roleSelect" class="form-control" formControlName="role">
+            <option [value]="1">Administrador</option>
+            <option [value]="2">Vendedor</option>
+          </select>
+        </form>
+        @if (inviteLink) {
+          <p>Invitación creada:</p>
+          <a [href]="inviteLink" target="_blank">{{ inviteLink }}</a> <div>
+            <p>Código QR:</p>
+            <qrcode [qrdata]="inviteLink"></qrcode>
+          </div>}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="createInvite()">
+          Crear Invitación
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

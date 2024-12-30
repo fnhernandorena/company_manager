@@ -3,6 +3,7 @@ import { ProductsService } from './products.service';
 import { DatePipe } from '@angular/common';
 import { Product } from './dto/product';
 import { BrandService } from '../brand/brand.service';
+import { NameService } from '../name/name.service'; // Importa el servicio de nombres
 
 @Component({
   selector: 'app-products',
@@ -20,7 +21,8 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductsService,
     private datePipe: DatePipe,
-    private brandService: BrandService
+    private brandService: BrandService,
+    private nameService: NameService // Inyecta el servicio de nombres
   ) {}
 
   ngOnInit() {
@@ -46,12 +48,11 @@ export class ProductsComponent implements OnInit {
   getProducts() {
     this.productService.getProducts().subscribe(
       async (data: any) => {
-        console.log('Productos:', data);
         this.products = await Promise.all(
           data.map(async (product: Product) => ({
             ...product,
             brandText: await this.getBrandName(product.brand_id),
-            nameText: this.names[product.name_id] || 'Unknown Name',
+            nameText: await this.getNameText(product.name_id),
             description: product.description?.trim() ? product.description : 'Descripción no disponible',
             createdAt: this.datePipe.transform(new Date(product.createdAt), 'dd/MM/yyyy HH:mm'),
             updatedAt: this.datePipe.transform(new Date(product.updatedAt), 'dd/MM/yyyy HH:mm'),
@@ -65,19 +66,34 @@ export class ProductsComponent implements OnInit {
   }
 
   async getBrandName(id: string): Promise<string> {
-
     if (this.brands[id]) {
       return this.brands[id];
     }
 
     try {
-      const brand: any = await this.brandService.getBrand(id).toPromise()
-      this.brands[id] = brand.name; 
+      const brand: any = await this.brandService.getBrand(id).toPromise();
+      this.brands[id] = brand.name;
       this.saveBrandsToLocalStorage();
       return brand.name;
     } catch (error) {
       console.error('Error al obtener la marca:', error);
       return 'Unknown Brand';
+    }
+  }
+
+  async getNameText(id: string): Promise<string> {
+    if (this.names[id]) {
+      return this.names[id];
+    }
+
+    try {
+      const name: any = await this.nameService.getName(id).toPromise();
+      this.names[id] = name.name;
+      this.saveNamesToLocalStorage();
+      return name.name;
+    } catch (error) {
+      console.error('Error al obtener el nombre:', error);
+      return 'Unknown Name';
     }
   }
 
@@ -87,5 +103,13 @@ export class ProductsComponent implements OnInit {
       name: this.brands[key],
     }));
     localStorage.setItem('brands', JSON.stringify(brandsArray));
+  }
+
+  saveNamesToLocalStorage() {
+    const namesArray = Object.keys(this.names).map((key) => ({
+      id: key,
+      name: this.names[key],
+    }));
+    localStorage.setItem('types', JSON.stringify(namesArray));
   }
 }

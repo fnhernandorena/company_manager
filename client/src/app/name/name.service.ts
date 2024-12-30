@@ -13,4 +13,8 @@ export class NameService {
   create(data: createName) {
     return this.http.post<RecievedName>(this.Url, data);
   }
+
+  getName(id: string) {
+    return this.http.get<RecievedName>(`${this.Url}/${id}`);
+  }
 }

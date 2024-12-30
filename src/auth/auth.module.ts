@@ -12,7 +12,6 @@ import { UserService } from 'src/user/user.service';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'test-secret',
-      signOptions: { expiresIn: '1w' },
     }),
   ],
   providers: [AuthService, PrismaService, JwtStrategy, UserService],

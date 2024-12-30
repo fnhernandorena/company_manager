@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma.service';
 import { CreateTokenDto } from './dto/create-token.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly jwtService: JwtService,
-        private readonly prisma: PrismaService,
+        private readonly jwtService: JwtService
       ) {}
 
       generateToken(user: CreateTokenDto) {
@@ -16,7 +14,7 @@ export class AuthService {
           role: user.role,
           company_id: user.company_id,
         };
-        return this.jwtService.sign(payload);
+        return this.jwtService.sign(payload, {expiresIn: '90d'});
       }
       
 }

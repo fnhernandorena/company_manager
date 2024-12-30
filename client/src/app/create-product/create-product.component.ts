@@ -4,7 +4,6 @@ import { BrandService } from '../brand/brand.service';
 import { NameService } from '../name/name.service';
 import { RecievedBrand, StorageBrand } from './interfaces/brand';
 import { Modal } from 'bootstrap';
-import { isPlatformBrowser } from '@angular/common';
 import { RecievedName, StorageName } from './interfaces/name';
 import { ProductsService } from '../products/products.service';
 
