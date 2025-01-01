@@ -1,76 +1,122 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
-import { InvoiceService } from './invoice.service';
-import { Invoice } from './interfaces/invoice';
+import { Component } from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormArray,
+  Validators,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ProductsService } from '../products/products.service';
+import { Product } from '../products/dto/product';
 import { BuyerService } from '../buyer/buyer.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-invoice',
+  selector: 'app-employes',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.css']
+  styleUrls: ['./invoice.component.css'],
 })
-export class InvoiceComponent implements OnInit {
-  invoiceForm: FormGroup | undefined;
-  invoices: Invoice[] = [];
-  buyers = []; // Lista de compradores, deberías cargarla desde un servicio
+export class InvoiceComponent {
+  invoiceForm: FormGroup;
+  buyerList: any = [];
+  productsList: any[] = [];
+  brands: Record<string, string> = {};
+  names: Record<string, string> = {};
 
   constructor(
-    private invoiceService: InvoiceService,
     private fb: FormBuilder,
-    private buyerService: BuyerService
-  ) {}
-
-  ngOnInit() {
-    this.getInvoices();
-    this.getBuyers(); // Cargar compradores al inicio
+    private productsService: ProductsService,
+    private buyerService: BuyerService,
+  ) {
     this.invoiceForm = this.fb.group({
-      buyer_id: ['', Validators.required],
-      description: ['', Validators.required],
-      amount: [0, [Validators.required, Validators.min(1)]],
-      products: this.fb.array([this.createProduct()]),
+      buyer_id: new FormControl(''),
+      description: new FormControl(''),
+      products: this.fb.array([]),
     });
   }
-
-  // Método para obtener las facturas
-  getInvoices(): any {
-    this.invoiceService.getInvoices().subscribe((data: any) => {
-      this.invoices = data;
-    });
+  ngOnInit() {
+    this.getProductList();
+    this.getBuyerList();
+    this.loadLocalData();
+  }
+  getProductList() {
+    this.productsService.getProducts().subscribe(
+      async (data: any) => {
+        this.productsList = await Promise.all(
+          data.map(async (product: Product) => ({
+            ...product,
+            brandText: await this.brands[product.brand_id],
+            nameText: await this.names[product.name_id],
+            description: product.description?.trim()
+              ? product.description
+              : 'Descripción no disponible',
+          })),
+        );
+      },
+      (error) => {
+        console.error('Error al obtener productos:', error);
+      },
+    );
   }
 
-  // Método para obtener los compradores
-  getBuyers(): void {
+  getBuyerList() {
     this.buyerService.getBuyer().subscribe((data: any) => {
-      this.buyers = data; // Asigna los compradores a la variable 'buyers'
+      this.buyerList = data;
     });
   }
 
-  // Crear un formulario para cada producto
-  createProduct(): FormGroup {
-    return this.fb.group({
-      productId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-      price: [0, [Validators.required, Validators.min(1)]],
+  products(): FormArray {
+    return this.invoiceForm.get('products') as FormArray;
+  }
+
+  addProduct() {
+    const product = this.fb.group({
+      product_id: new FormControl(''),
+      quantity: new FormControl(''),
     });
+    this.products().push(product);
   }
 
-  // Método para agregar más productos al formulario
-  addProduct(): void {
-    if (this.invoiceForm) {
-      (this.invoiceForm.get('products') as FormArray).push(this.createProduct());
-    }
+  removeProduct(i: number) {
+    this.products().removeAt(i);
   }
 
-  // Crear factura
-  createInvoice(): void {
-    if (this.invoiceForm?.valid) {
-      this.invoiceService.createInvoice(this.invoiceForm.value).subscribe((response: any) => {
-        // Maneja la respuesta después de crear la factura
-        console.log('Factura creada', response);
-        this.getInvoices(); // Vuelve a cargar las facturas
-      });
+  onSubmit() {
+    const products = this.products().value; // Obtenemos los productos del formulario
+  
+    const isStockValid = products.every((product: any) => {
+      const selectedProduct = this.productsList.find((p) => p.id === product.product_id);
+      return selectedProduct && product.quantity <= selectedProduct.quantity;
+    });
+  
+    if (!isStockValid) {
+      alert('La cantidad solicitada supera el stock disponible para uno o más productos.');
+      return;
     }
+  
+    console.log(this.invoiceForm.value);
+  }
+
+  loadLocalData() {
+    const brandsArray = JSON.parse(localStorage.getItem('brands') || '[]');
+    const namesArray = JSON.parse(localStorage.getItem('types') || '[]');
+
+    this.brands = brandsArray.reduce(
+      (acc: Record<string, string>, item: any) => {
+        acc[item.id] = item.name;
+        return acc;
+      },
+      {},
+    );
+
+    this.names = namesArray.reduce((acc: Record<string, string>, item: any) => {
+      acc[item.id] = item.name;
+      return acc;
+    }, {});
   }
 }

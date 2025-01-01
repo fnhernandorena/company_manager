@@ -20,4 +20,3 @@ export interface Invoice {
     amount: number;
     products: SellDto[];
   }
-  
